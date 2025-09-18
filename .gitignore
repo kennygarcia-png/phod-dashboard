@@ -1,0 +1,25 @@
+# Database files
+database/*.db
+database/*.db-journal
+
+# Logs
+logs/*.log
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Backups
+backups/*
+!backups/.gitkeep
+
+# Temp files
+*.tmp
+*~
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Config files with sensitive data
+config/database.php
