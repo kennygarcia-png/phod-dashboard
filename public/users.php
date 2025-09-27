@@ -101,8 +101,20 @@ $roles = getAllRoles($db);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>User Management - PhOD</title>
+    <title>Dashboard - PhOD</title>
     <link rel="stylesheet" href="/css/main.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PhOD">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
+    
+    <!-- Theme color -->
+    <meta name="theme-color" content="#667eea">
 </head>
 <body>
     <div class="header">

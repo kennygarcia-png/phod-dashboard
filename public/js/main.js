@@ -25,3 +25,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Register service worker for PWA (THIS SHOULD BE OUTSIDE, NOT NESTED)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registered:', registration.scope);
+            })
+            .catch(error => {
+                console.log('ServiceWorker registration failed:', error);
+            });
+    });
+}
