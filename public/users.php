@@ -106,11 +106,14 @@ $roles = getAllRoles($db);
 </head>
 <body>
     <div class="header">
-        <h1>PhOD - User Management</h1>
-        <div class="nav">
-            <a href="/dashboard.php">Dashboard</a>
-            <a href="/logout.php">Logout</a>
-        </div>
+	<h1>
+	   PhOD - User Management
+	    <button class="nav-toggle">☰</button>
+       </h1>
+       <div class="nav">
+	  <a href="/dashboard.php">Dashboard</a>
+	  <a href="/logout.php">Logout</a>
+	</div>
     </div>
     
     <div class="container">
