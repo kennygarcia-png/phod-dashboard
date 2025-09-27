@@ -21,158 +21,28 @@ $stats = getDatabaseStats($db);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - PhOD</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-        }
-        
-        .header {
-            background: #667eea;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        
-        .welcome-card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .stat-card h3 {
-            color: #667eea;
-            font-size: 32px;
-            margin-bottom: 5px;
-        }
-        
-        .stat-card p {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .action-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s;
-        }
-        
-        .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .action-card h3 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .action-card p {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border-left: 4px solid #28a745;
-        }
-        
-        .roles-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>User Management - PhOD</title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
     <div class="header">
-        <h1>PhOD Dashboard</h1>
-        <div class="user-info">
-            <div>
-                <strong><?php echo htmlspecialchars($user['full_name']); ?></strong>
-                <br>
-                <small>
-                    <?php foreach ($user['roles'] as $role): ?>
-                        <span class="roles-badge"><?php echo htmlspecialchars($role); ?></span>
-                    <?php endforeach; ?>
-                </small>
-            </div>
-            <a href="/logout.php" class="logout-btn">Logout</a>
+    <h1>
+        PhOD Dashboard
+        <button class="nav-toggle">☰</button>
+    </h1>
+    <div class="user-info">
+        <div>
+            <strong><?php echo htmlspecialchars($user['full_name']); ?></strong>
+            <br>
+            <small>
+                <?php foreach ($user['roles'] as $role): ?>
+                    <span class="roles-badge"><?php echo htmlspecialchars($role); ?></span>
+                <?php endforeach; ?>
+            </small>
         </div>
+        <a href="/logout.php" class="logout-btn">Logout</a>
+    </div>
     </div>
     
     <div class="container">
@@ -235,5 +105,7 @@ $stats = getDatabaseStats($db);
             </a>
         </div>
     </div>
+	<script src="/js/main.js"></script>
 </body>
 </html>
+

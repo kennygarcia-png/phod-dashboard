@@ -100,101 +100,9 @@ $roles = getAllRoles($db);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>User Management - PhOD</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; }
-        
-        .header {
-            background: #667eea;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .nav { display: flex; gap: 20px; align-items: center; }
-        .nav a { color: white; text-decoration: none; }
-        .nav a:hover { text-decoration: underline; }
-        
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        th { background: #f8f9fa; font-weight: bold; }
-        
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 12px;
-            background: #e3f2fd;
-            color: #1976d2;
-            margin-right: 5px;
-        }
-        
-        .active { color: green; }
-        .inactive { color: red; }
-        
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        
-        .checkbox-group { display: flex; gap: 15px; flex-wrap: wrap; }
-        .checkbox-group label { font-weight: normal; display: flex; align-items: center; gap: 5px; }
-        
-        button {
-            background: #667eea;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        button:hover { background: #5568d3; }
-        
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
     <div class="header">
@@ -327,5 +235,6 @@ $roles = getAllRoles($db);
             </table>
         </div>
     </div>
+   <script src="/js/main.js"></script>
 </body>
 </html>
