@@ -74,6 +74,41 @@ function createUser($db, $data) {
 }
 
 /**
+ * Update user status (activate/deactivate)
+ * @param PDO $db Database connection
+ * @param int $user_id User ID
+ * @param int $active Active status (0 or 1)
+ * @return bool Success status
+ */
+function updateUserStatus($db, $user_id, $active) {
+    $stmt = $db->prepare("UPDATE users SET active = ? WHERE user_id = ?");
+    return $stmt->execute([$active, $user_id]);
+}
+
+/**
+ * Remove role from user
+ * @param PDO $db Database connection
+ * @param int $user_id User ID
+ * @param int $role_id Role ID
+ * @return bool Success status
+ */
+function removeUserRole($db, $user_id, $role_id) {
+    $stmt = $db->prepare("DELETE FROM user_roles WHERE user_id = ? AND role_id = ?");
+    return $stmt->execute([$user_id, $role_id]);
+}
+
+/**
+ * Delete user (also removes role assignments due to CASCADE)
+ * @param PDO $db Database connection
+ * @param int $user_id User ID
+ * @return bool Success status
+ */
+function deleteUser($db, $user_id) {
+    $stmt = $db->prepare("DELETE FROM users WHERE user_id = ?");
+    return $stmt->execute([$user_id]);
+}
+
+/**
  * Assign role to user
  * @param PDO $db Database connection
  * @param int $user_id User ID
