@@ -74,7 +74,7 @@ $messages = getFlashMessages();
 </head>
 <body>
     <div class="login-container">
-        <h1>PhOD Dashboard</h1>
+        <h1>	PhOD Dashboard</h1>
         <p class="subtitle">Hydrological Operations Dashboard</p>
         
         <?php if ($messages['error']): ?>

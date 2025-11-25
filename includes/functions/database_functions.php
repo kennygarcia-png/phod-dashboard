@@ -155,12 +155,157 @@ function getAllCruises($db) {
 }
 
 /**
- * Get all active stations
+ * Get all active stations for specific cruise
  * @param PDO $db Database connection
+ * @param int $cruise_id Cruise ID
  * @return array Array of stations
  */
+function getStationsByCruise($db, $cruise_id) {
+    $stmt = $db->prepare("
+        SELECT station_id, station_name, station_abbreviation,
+               station_number, latitude, longitude
+	FROM stations
+	WHERE cruise_id = ? AND active = 1
+	ORDER BY station_number
+    ");
+    $stmt->execute([$cruise_id]);
+    return $stmt->fetchAll();
+}
+
+/**
+ * Get all stations (for admin view)
+ * @param PDO $db Database connection
+ * @return array Array of stations with cruise info
+ */
 function getAllStations($db) {
-    $stmt = $db->query("SELECT station_id, station_name, station_abbreviation FROM stations WHERE active = 1 ORDER BY station_name");
+    $stmt = $db->query("
+        SELECT s.*, c.cruise_name 
+        FROM stations s
+        JOIN cruises c ON s.cruise_id = c.cruise_id
+        WHERE s.active = 1 
+        ORDER BY c.cruise_name, s.station_number
+    ");
+    return $stmt->fetchAll();
+}
+
+/**
+ * Create new station
+ * @param PDO $db Database connection
+ * @param array $data Station data (must include cruise_id)
+ * @return int|false New station ID or false on failure
+ */
+function createStation($db, $data) {
+    $stmt = $db->prepare("
+        INSERT INTO stations 
+        (cruise_id, station_number, station_name, station_abbreviation, latitude, longitude)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ");
+    $result = $stmt->execute([
+        $data['cruise_id'],
+        $data['station_number'],
+        $data['station_name'],
+        $data['station_abbreviation'] ?? null,
+        $data['latitude'] ?? null,
+        $data['longitude'] ?? null
+    ]);
+    return $result ? $db->lastInsertId() : false;
+}
+
+/**
+ * Get target depths for a station
+ * @param PDO $db Database connection
+ * @param int $station_id Station ID
+ * @return array Target depths for the station
+ */
+function getStationTargetDepths($db, $station_id) {
+    $stmt = $db->prepare("
+        SELECT target_depth_id, target_depth_pressure, sequence_order, 
+               niskin_position, notes
+        FROM station_target_depths
+        WHERE station_id = ?
+        ORDER BY sequence_order
+    ");
+    $stmt->execute([$station_id]);
+    return $stmt->fetchAll();
+}
+
+/**
+ * Add target depth for station
+ * @param PDO $db Database connection
+ * @param array $data Target depth data
+ * @return int|false New target depth ID or false
+ */
+function addStationTargetDepth($db, $data) {
+    $stmt = $db->prepare("
+        INSERT INTO station_target_depths
+        (station_id, target_depth_pressure, sequence_order, niskin_position, notes)
+        VALUES (?, ?, ?, ?, ?)
+    ");
+
+    $result = $stmt->execute([
+        $data['station_id'],
+        $data['target_depth_pressure'],
+        $data['sequence_order'],
+        $data['niskin_position'] ?? null,
+        $data['notes'] ?? ''
+    ]);
+
+    return $result ? $db->lastInsertId() : false;
+}
+
+/**
+ * Record actual sample capture with target reference
+ * @param PDO $db Database connection
+ * @param int $cast_id Cast ID
+ * @param int $niskin_id Niskin bottle ID
+ * @param int $target_depth_id Target depth ID
+ * @param array $data Capture data
+ * @return bool Success status
+ */
+function recordSampleCapture($db, $cast_id, $niskin_id, $target_depth_id, $data) {
+    $stmt = $db->prepare("
+        INSERT INTO sample_pressure
+        (cast_log_id, niskin_id, target_depth_id,
+         sample_pressure_value, sample_captured,
+         sample_captured_datetime, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ");
+
+    return $stmt->execute([
+        $cast_id,
+        $niskin_id,
+        $target_depth_id,
+        $data['actual_pressure'] ?? null,
+        $data['captured'] ?? 0,
+        $data['datetime'] ?? date('Y-m-d H:i:s'),
+        $data['notes'] ?? ''
+    ]);
+}
+
+/**
+ * Get capture summary for a cast
+ * @param PDO $db Database connection
+ * @param int $cast_id Cast ID
+ * @return array Summary with target vs actual depths
+ */
+function getCastCaptureSummary($db, $cast_id) {
+    $stmt = $db->prepare("
+        SELECT
+            sp.sample_pressure_id,
+            nb.niskin_number,
+            std.target_depth_pressure,
+            sp.sample_pressure_value as actual_depth_pressure,
+            (sp.sample_pressure_value - std.target_depth_pressure) as depth_variance,
+            sp.sample_captured,
+            sp.sample_captured_datetime,
+            std.sequence_order
+        FROM sample_pressure sp
+        JOIN niskin_bottles nb ON sp.niskin_id = nb.niskin_id
+        LEFT JOIN station_target_depths std ON sp.target_depth_id = std.target_depth_id
+        WHERE sp.cast_log_id = ?
+        ORDER BY std.sequence_order, nb.niskin_number
+    ");
+    $stmt->execute([$cast_id]);
     return $stmt->fetchAll();
 }
 
@@ -458,12 +603,15 @@ function getDatabaseStats($db) {
     $stats = [];
     
     // Get table counts
-    $tables = ['users', 'ctd_cast_log', 'bottles', 'ships', 'cruises', 'stations'];
+    $tables = ['users', 'niskin_bottles', 'bottles', 'ships', 'cruises', 'stations'];
     foreach ($tables as $table) {
+	try { 
         $stmt = $db->query("SELECT COUNT(*) FROM $table");
         $stats[$table] = $stmt->fetchColumn();
+    } catch (PD0Exception $e) {
+	$stats[$table] = 0;
     }
-    
+  }
     return $stats;
 }
 ?>

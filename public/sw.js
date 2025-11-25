@@ -1,53 +1,48 @@
-const CACHE_NAME = 'phod-v1';
-const urlsToCache = [
-  '/',
-  '/login.php',
-  '/dashboard.php',
-  '/users.php',
-  '/css/main.css',
-  '/js/main.js'
-];
+const CACHE_NAME = 'phod-v2';
 
-// Install service worker and cache resources
+// Install - cache critical static resources only
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll([
+        '/css/main.css',
+        '/js/main.js',
+        '/js/gps.js',
+        '/assets/icon-192.png',
+        '/assets/icon-512.png'
+      ]);
+    })
   );
 });
 
-// Fetch from cache first, then network
+// Fetch - network first, then cache
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
+        // Clone the response
+        const responseToCache = response.clone();
         
-        // Clone the request
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then(response => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          
-          // Clone the response
-          const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
-          
-          return response;
+        // Cache the fetched response
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseToCache);
         });
+        
+        return response;
+      })
+      .catch(() => {
+        // Network failed, try cache
+        return caches.match(event.request)
+          .then(response => {
+            if (response) {
+              return response;
+            }
+            // Return offline page if nothing in cache
+            return new Response(
+              '<h1>Offline</h1><p>You are offline. Please reconnect to use PhOD.</p>',
+              { headers: { 'Content-Type': 'text/html' } }
+            );
+          });
       })
   );
 });
@@ -68,3 +63,4 @@ self.addEventListener('activate', event => {
     })
   );
 });
+

@@ -80,8 +80,8 @@ $stats = getDatabaseStats($db);
                 <p>Active Users</p>
             </div>
             <div class="stat-card">
-                <h3><?php echo $stats['ctd_cast_log']; ?></h3>
-                <p>CTD Casts</p>
+                <h3><?php echo $stats['niskin_bottles']; ?></h3>
+                <p>Niskin Bottles</p>
             </div>
             <div class="stat-card">
                 <h3><?php echo $stats['bottles']; ?></h3>
@@ -100,27 +100,99 @@ $stats = getDatabaseStats($db);
                 <p>Stations</p>
             </div>
         </div>
-        
-        <h2 style="margin-top: 40px;">Quick Actions</h2>
-        <div class="quick-actions">
-            <a href="#" class="action-card">
-                <h3>New CTD Cast</h3>
-                <p>Start logging a new CTD cast operation</p>
-            </a>
-            <a href="#" class="action-card">
-                <h3>Sample Management</h3>
-                <p>Track and manage water samples</p>
-            </a>
-            <a href="/users.php" class="action-card">
-                <h3>User Management</h3>
-                <p>Manage team members and roles</p>
-            </a>
-            <a href="#" class="action-card">
-                <h3>System Settings</h3>
-                <p>Configure ships, stations, and equipment</p>
-            </a>
-        </div>
-    </div>
+
+	<h2 style="margin-top: 40px;">Quick Actions</h2>
+	<div class="quick-actions">
+	    <?php if (userHasRole('admin')): ?>
+	        <!-- Admin sees management options -->
+	        <a href="/users.php" class="action-card">
+	            <h3>User Management</h3>
+	            <p>Manage team members and roles</p>
+	        </a>
+	        <a href="/ships.php" class="action-card">
+	            <h3>Ships Management</h3>
+	            <p>Manage vessel information</p>
+	        </a>
+	        <a href="/stations.php" class="action-card">
+	            <h3>Stations Management</h3>
+	            <p>Manage sampling stations</p>
+	        </a>
+	        <a href="/cruises.php" class="action-card">
+	            <h3>Cruises Management</h3>
+	            <p>Manage cruise operations</p>
+	        </a>
+	        <a href="/niskin.php" class="action-card">
+	            <h3>Niskin Management</h3>
+	            <p>Manage Niskin bottle inventory</p>
+	        </a>
+	        <a href="/sensors.php" class="action-card">
+	            <h3>Sensor Inventory</h3>
+	            <p>Manage equipment and sensors</p>
+	        </a>
+	        <a href="/sample_types.php" class="action-card">
+	            <h3>Sample Types</h3>
+	            <p>Manage sample type configurations</p>
+	        </a>
+	        <a href="/view_operations.php" class="action-card">
+	            <h3>View Operations</h3>
+	            <p>Monitor all CTD casts and sampling</p>
+	        </a>
+
+	    <?php elseif (userHasRole('console') || userHasRole('observer')): ?>
+	        <!-- Observer/Console operations -->
+	        <a href="/ctd_cast.php" class="action-card">
+	            <h3>New CTD Cast</h3>
+	            <p>Start logging a new CTD cast</p>
+	        </a>
+	        <a href="/stations.php" class="action-card">
+	            <h3>Stations Management</h3>
+	            <p>Manage sampling stations</p>
+	        </a>
+	        <a href="/ships.php" class="action-card">
+	            <h3>Ships Management</h3>
+	            <p>Manage vessel information</p>
+	        </a>
+	        <a href="/sensors.php" class="action-card">
+	            <h3>Sensor Inventory</h3>
+	            <p>Manage equipment and sensors</p>
+	        </a>
+	        <a href="/niskin.php" class="action-card">
+	            <h3>Niskin Bottles</h3>
+	            <p>Manage bottle inventory</p>
+	        </a>
+
+	    <?php elseif (userHasRole('bottlecop')): ?>
+	        <!-- Bottlecop - sampling operations only -->
+	        <a href="/sampling.php" class="action-card">
+	            <h3>Sample Management</h3>
+	            <p>Track and manage water samples</p>
+	        </a>
+	        <a href="/bottles.php" class="action-card">
+	            <h3>Bottle Operations</h3>
+	            <p>Manage bottle assignments</p>
+	        </a>
+	        <a href="/view_casts.php" class="action-card">
+	            <h3>View CTD Casts</h3>
+	            <p>View cast information (read-only)</p>
+	        </a>
+
+	    <?php elseif (userHasRole('analyst') || userHasRole('sampler')): ?>
+	        <!-- Analyst/Sampler - view and download only -->
+	        <a href="/view_data.php" class="action-card">
+	            <h3>View Data</h3>
+	            <p>Browse all collected data</p>
+	        </a>
+	        <a href="/reports.php" class="action-card">
+	            <h3>Generate Reports</h3>
+	            <p>Create and download reports</p>
+	        </a>
+	        <a href="/export.php" class="action-card">
+	            <h3>Export Data</h3>
+	            <p>Download data in various formats</p>
+	        </a>
+	    <?php endif; ?>
+	</div>
+
 	<script src="/js/main.js"></script>
 	<script src="/js/install-prompt.js"></script>
 </body>
